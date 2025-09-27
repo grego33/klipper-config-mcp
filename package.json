@@ -1,5 +1,5 @@
 {
-  "name": "klipper-config-mcp",
+  "name": "@grego33/klipper-config-mcp",
   "version": "1.0.0",
   "description": "Model Context Protocol server for Klipper 3D printer configuration management",
   "main": "dist/index.js",
@@ -24,8 +24,16 @@
     "moonraker",
     "configuration"
   ],
-  "author": "",
+  "author": "grego33",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grego33/klipper-config-mcp.git"
+  },
+  "homepage": "https://github.com/grego33/klipper-config-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/grego33/klipper-config-mcp/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
     "axios": "^1.12.2",
