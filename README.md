@@ -1,13 +1,17 @@
 # Klipper Config MCP
 
-A Model Context Protocol (MCP) server for interacting with Klipper 3D printer configurations through Moonraker API.
+[![npm version](https://badge.fury.io/js/@grego33%2Fklipper-config-mcp.svg)](https://www.npmjs.com/package/@grego33/klipper-config-mcp)
+
+A Model Context Protocol (MCP) server for reading Klipper 3D printer configurations through Moonraker API.
+
+**📦 Install with:** `npx @grego33/klipper-config-mcp`
 
 ## Features
 
 - **Configuration File Management**: Read and parse Klipper configuration files
 - **Real-time Analysis**: Parse config syntax and validate parameters
 - **System Integration**: Get printer status and system information
-- **Claude Desktop Integration**: Seamless integration with Claude for configuration assistance
+- **Universal Compatibility**: Works with any chat agent that supports the Model Context Protocol
 
 ## Available Tools
 
@@ -23,46 +27,25 @@ A Model Context Protocol (MCP) server for interacting with Klipper 3D printer co
 - `get_printer_status`: Get current printer state and status
 - `get_system_info`: Retrieve system information from the printer host
 
-## Installation
+## Prerequisites
 
-### Prerequisites
-
-- Node.js 18+ and npm
 - A running Klipper printer with Moonraker API access
 - Network connectivity to your printer
+- A chat agent that supports Model Context Protocol (MCP)
 
-### Setup
+## Agent Configuration
 
-1. **Clone and install:**
-   ```bash
-   git clone https://github.com/yourusername/klipper-config-mcp.git
-   cd klipper-config-mcp
-   npm install
-   npm run build
-   ```
-
-2. **Configure environment variables:**
-   ```bash
-   export MOONRAKER_HOST=192.168.1.100  # Your printer's IP
-   export MOONRAKER_PORT=7125           # Moonraker port (default: 7125)
-   export MOONRAKER_API_KEY=your_key    # Optional API key
-   ```
-
-3. **Test the connection:**
-   ```bash
-   npm run start
-   ```
-
-## Claude Desktop Configuration
+### Claude Desktop
 
 Add this to your Claude Desktop config file (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
 
+### Using npx (Recommended)
 ```json
 {
   "mcpServers": {
     "klipper-config": {
       "command": "npx",
-      "args": ["tsx", "/path/to/klipper-config-mcp/src/index.ts"],
+      "args": ["@grego33/klipper-config-mcp"],
       "env": {
         "MOONRAKER_HOST": "192.168.1.100",
         "MOONRAKER_PORT": "7125",
@@ -73,9 +56,31 @@ Add this to your Claude Desktop config file (`~/Library/Application Support/Clau
 }
 ```
 
+
+### Other MCP-Compatible Agents
+
+This server implements the standard MCP protocol and can be integrated with any chat agent that supports MCP. Refer to your agent's documentation for specific configuration instructions.
+
+
+## Environment Variables
+
+Configure your printer connection using environment variables:
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `MOONRAKER_HOST` | Printer hostname or IP | `localhost` | No |
+| `MOONRAKER_PORT` | Moonraker API port | `7125` | No |
+| `MOONRAKER_API_KEY` | API key for authentication | None | No |
+
+You can set these in a `.env` file:
+```bash
+cp .env.example .env
+# Edit .env with your printer's details
+```
+
 ## Usage Examples
 
-Once configured with Claude Desktop, you can ask Claude to help with your printer:
+Once configured with your chat agent, you can ask it to help with your printer:
 
 ### Configuration Analysis
 > "Show me my extruder configuration"
@@ -114,59 +119,6 @@ The MCP server can parse and analyze standard Klipper configuration files includ
 - **Bed Leveling**: `[bed_mesh]`, `[z_tilt]`, `[quad_gantry_level]`
 - **And many more Klipper sections**
 
-## Development
-
-### Project Structure
-
-```
-klipper-config-mcp/
-├── src/
-│   ├── index.ts              # Main MCP server
-│   ├── moonraker-client.ts   # Moonraker API client
-│   ├── config-parser.ts      # Klipper config parsing
-│   └── types.ts              # TypeScript definitions
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-### Building
-
-```bash
-npm run build    # Compile TypeScript
-npm run dev      # Development mode with auto-reload
-npm run test     # Run tests
-```
-
-### Testing
-
-```bash
-# Run all tests
-npm test
-
-# Test with a specific printer
-MOONRAKER_HOST=192.168.1.100 npm test
-```
-
-## API Reference
-
-### Environment Variables
-
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `MOONRAKER_HOST` | Printer hostname or IP | `localhost` | No |
-| `MOONRAKER_PORT` | Moonraker API port | `7125` | No |
-| `MOONRAKER_API_KEY` | API key for authentication | None | No |
-
-### Error Handling
-
-The MCP server provides detailed error messages for common issues:
-
-- **Connection errors**: When Moonraker is unreachable
-- **File not found**: When configuration files don't exist
-- **Parse errors**: When configuration syntax is invalid
-- **Permission errors**: When API access is denied
-
 ## Troubleshooting
 
 ### Common Issues
@@ -180,25 +132,14 @@ The MCP server provides detailed error messages for common issues:
    - Ensure Moonraker has access to the config directory
    - Check file permissions on the printer
 
-3. **Claude Desktop not loading the MCP**
-   - Verify the path in `claude_desktop_config.json`
+3. **Agent not loading the MCP**
+   - Verify the configuration syntax
    - Check the environment variables
-   - Restart Claude Desktop after configuration changes
-
-### Debug Mode
-
-Enable debug logging:
-```bash
-DEBUG=klipper-config-mcp npx tsx src/index.ts
-```
+   - Restart your chat agent after configuration changes
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes and add tests
-4. Run the test suite: `npm test`
-5. Submit a pull request
+See [DEVELOPER.md](DEVELOPER.md) for development setup, testing, and contribution guidelines.
 
 ## License
 
@@ -206,9 +147,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/klipper-config-mcp/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/klipper-config-mcp/discussions)
-- **Documentation**: [Wiki](https://github.com/yourusername/klipper-config-mcp/wiki)
+- **Issues**: [GitHub Issues](https://github.com/grego33/klipper-config-mcp/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/grego33/klipper-config-mcp/discussions)
+- **npm Package**: [@grego33/klipper-config-mcp](https://www.npmjs.com/package/@grego33/klipper-config-mcp)
 
 ## Related Projects
 

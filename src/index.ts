@@ -408,9 +408,8 @@ async function main() {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((error) => {
-    console.error('Unhandled error:', error);
-    process.exit(1);
-  });
-}
+// Always run main when this file is executed
+main().catch((error) => {
+  console.error('Unhandled error:', error);
+  process.exit(1);
+});
