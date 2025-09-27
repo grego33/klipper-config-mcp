@@ -151,8 +151,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - **Discussions**: [GitHub Discussions](https://github.com/grego33/klipper-config-mcp/discussions)
 - **npm Package**: [@grego33/klipper-config-mcp](https://www.npmjs.com/package/@grego33/klipper-config-mcp)
 
-## Related Projects
+If this project helps you, consider supporting its development:
 
-- [Klipper](https://github.com/Klipper3d/klipper) - 3D printer firmware
-- [Moonraker](https://github.com/Arksine/moonraker) - Klipper API server
-- [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk) - TypeScript MCP SDK
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/mattgregory33)
