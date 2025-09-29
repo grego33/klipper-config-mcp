@@ -2,13 +2,15 @@
 
 [![npm version](https://badge.fury.io/js/@grego33%2Fklipper-config-mcp.svg)](https://www.npmjs.com/package/@grego33/klipper-config-mcp)
 
-A Model Context Protocol (MCP) server for reading Klipper 3D printer configurations through Moonraker API.
+A Model Context Protocol (MCP) server for reading Klipper 3D printer configurations, logs, and documentation through Moonraker API.
 
 **📦 Install with:** `npx @grego33/klipper-config-mcp`
 
 ## Features
 
-- **Configuration File Management**: Read and parse Klipper configuration files
+- **Configuration File Access**: Read and parse Klipper configuration files
+- **Log File Access**: Retrieve Klipper log files for troubleshooting
+- **Documentation Access**: Browse Klipper documentation files
 - **Real-time Analysis**: Parse config syntax and validate parameters
 - **System Integration**: Get printer status and system information
 - **Universal Compatibility**: Works with any chat agent that supports the Model Context Protocol
@@ -21,6 +23,13 @@ A Model Context Protocol (MCP) server for reading Klipper 3D printer configurati
 - `list_config_files`: List all available configuration files with metadata
 - `parse_config`: Parse configuration files and extract structured data
 - `get_config_section`: Get specific sections from configuration files
+
+### 📄 Log & Documentation Tools
+
+- `get_log_file`: Retrieve contents of Klipper log files
+- `list_log_files`: List all available log files with metadata
+- `get_doc_file`: Retrieve Klipper documentation files
+- `list_doc_files`: List all available documentation files
 
 ### 📊 System Tools
 
@@ -89,12 +98,19 @@ Once configured with your chat agent, you can ask it to help with your printer:
 >
 > "Parse my printer.cfg and check for errors"
 
-### Troubleshooting
+### Log Analysis & Troubleshooting
+> "Show me the latest Klipper log file"
+>
+> "List all available log files"
+>
 > "What's my printer's current status?"
 >
-> "Show me the stepper motor settings"
+> "Check recent error messages in the logs"
+
+### Documentation Access
+> "Show me Klipper documentation files"
 >
-> "Check my bed mesh configuration"
+> "List available documentation"
 
 ### System Information
 > "What system is my printer running on?"
