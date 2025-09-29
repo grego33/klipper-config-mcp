@@ -6,7 +6,9 @@ import {
   MoonrakerResponse,
   PrinterState,
   SystemInfo,
-  ConfigFile
+  ConfigFile,
+  LogFile,
+  DocFile
 } from './types.js';
 
 export class MoonrakerClient {
@@ -118,6 +120,96 @@ export class MoonrakerClient {
         }
         if (error.response?.status === 403) {
           throw new Error(`Access denied when deleting '${filename}'`);
+        }
+      }
+      throw error;
+    }
+  }
+
+  async getLogFile(filename: string): Promise<string> {
+    try {
+      const response = await this.client.get<string>(`/server/files/logs/${encodeURIComponent(filename)}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          throw new Error(`Log file '${filename}' not found`);
+        }
+        if (error.response?.status === 403) {
+          throw new Error(`Access denied to log file '${filename}'`);
+        }
+      }
+      throw error;
+    }
+  }
+
+  async listLogFiles(pattern?: string): Promise<LogFile[]> {
+    try {
+      const url = '/server/files/list';
+      const params = new URLSearchParams({
+        root: 'logs',
+        ...(pattern && { extended: 'true' }),
+      });
+
+      const response = await this.client.get<FileListResponse>(`${url}?${params}`);
+
+      let files = response.data.result;
+
+      if (pattern) {
+        const regex = new RegExp(pattern.replace(/\*/g, '.*'), 'i');
+        files = files.filter(file => regex.test(file.path));
+      }
+
+      return files;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          throw new Error('Logs directory not found');
+        }
+      }
+      throw error;
+    }
+  }
+
+  async getDocFile(filename: string): Promise<string> {
+    try {
+      const response = await this.client.get<string>(`/server/files/docs/${encodeURIComponent(filename)}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          throw new Error(`Documentation file '${filename}' not found`);
+        }
+        if (error.response?.status === 403) {
+          throw new Error(`Access denied to documentation file '${filename}'`);
+        }
+      }
+      throw error;
+    }
+  }
+
+  async listDocFiles(pattern?: string): Promise<DocFile[]> {
+    try {
+      const url = '/server/files/list';
+      const params = new URLSearchParams({
+        root: 'docs',
+        ...(pattern && { extended: 'true' }),
+      });
+
+      const response = await this.client.get<FileListResponse>(`${url}?${params}`);
+
+      let files = response.data.result;
+
+      if (pattern) {
+        const regex = new RegExp(pattern.replace(/\*/g, '.*'), 'i');
+        files = files.filter(file => regex.test(file.path));
+      }
+
+      return files;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          throw new Error('Documentation directory not found');
         }
       }
       throw error;

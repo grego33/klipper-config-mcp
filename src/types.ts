@@ -28,6 +28,9 @@ export interface ConfigFile {
   permissions?: string;
 }
 
+export type LogFile = ConfigFile;
+export type DocFile = ConfigFile;
+
 export interface FileListResponse {
   result: ConfigFile[];
 }
@@ -68,6 +71,10 @@ export enum ToolNames {
   GET_CONFIG_SECTION = 'get_config_section',
   GET_PRINTER_STATUS = 'get_printer_status',
   GET_SYSTEM_INFO = 'get_system_info',
+  GET_LOG_FILE = 'get_log_file',
+  LIST_LOG_FILES = 'list_log_files',
+  GET_DOC_FILE = 'get_doc_file',
+  LIST_DOC_FILES = 'list_doc_files',
 }
 
 export interface GetConfigFileArgs {
@@ -86,6 +93,22 @@ export interface ParseConfigArgs {
 export interface GetConfigSectionArgs {
   filename: string;
   sectionName: string;
+}
+
+export interface GetLogFileArgs {
+  filename: string;
+}
+
+export interface ListLogFilesArgs {
+  pattern?: string;
+}
+
+export interface GetDocFileArgs {
+  filename: string;
+}
+
+export interface ListDocFilesArgs {
+  pattern?: string;
 }
 
 export interface PrinterState {
