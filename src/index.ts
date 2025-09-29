@@ -19,6 +19,10 @@ import {
   ListConfigFilesArgs,
   ParseConfigArgs,
   GetConfigSectionArgs,
+  GetLogFileArgs,
+  ListLogFilesArgs,
+  GetDocFileArgs,
+  ListDocFilesArgs,
 } from './types.js';
 
 class KlipperConfigMCP {
@@ -138,6 +142,62 @@ class KlipperConfigMCP {
               required: [],
             },
           },
+          {
+            name: ToolNames.GET_LOG_FILE,
+            description: 'Retrieve the contents of a Klipper log file',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                filename: {
+                  type: 'string',
+                  description: 'Name of the log file to retrieve (e.g., klippy.log)',
+                },
+              },
+              required: ['filename'],
+            },
+          },
+          {
+            name: ToolNames.LIST_LOG_FILES,
+            description: 'List all available Klipper log files',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                pattern: {
+                  type: 'string',
+                  description: 'Optional pattern to filter files (supports wildcards)',
+                },
+              },
+              required: [],
+            },
+          },
+          {
+            name: ToolNames.GET_DOC_FILE,
+            description: 'Retrieve the contents of a Klipper documentation file',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                filename: {
+                  type: 'string',
+                  description: 'Name of the documentation file to retrieve',
+                },
+              },
+              required: ['filename'],
+            },
+          },
+          {
+            name: ToolNames.LIST_DOC_FILES,
+            description: 'List all available Klipper documentation files',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                pattern: {
+                  type: 'string',
+                  description: 'Optional pattern to filter files (supports wildcards)',
+                },
+              },
+              required: [],
+            },
+          },
         ],
       };
     });
@@ -164,6 +224,18 @@ class KlipperConfigMCP {
 
           case ToolNames.GET_SYSTEM_INFO:
             return await this.handleGetSystemInfo();
+
+          case ToolNames.GET_LOG_FILE:
+            return await this.handleGetLogFile(args as unknown as GetLogFileArgs);
+
+          case ToolNames.LIST_LOG_FILES:
+            return await this.handleListLogFiles(args as unknown as ListLogFilesArgs);
+
+          case ToolNames.GET_DOC_FILE:
+            return await this.handleGetDocFile(args as unknown as GetDocFileArgs);
+
+          case ToolNames.LIST_DOC_FILES:
+            return await this.handleListDocFiles(args as unknown as ListDocFilesArgs);
 
           default:
             throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
@@ -387,6 +459,90 @@ class KlipperConfigMCP {
         ],
       };
     }
+  }
+
+  private async handleGetLogFile(args: GetLogFileArgs) {
+    const { filename } = args;
+
+    if (!filename || filename.trim() === '') {
+      throw new McpError(ErrorCode.InvalidParams, 'Filename is required');
+    }
+
+    const content = await this.moonraker.getLogFile(filename);
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `Log file: ${filename}\n\nConnection: ${this.moonraker.getConnectionInfo()}\n\n${content}`,
+        },
+      ],
+    };
+  }
+
+  private async handleListLogFiles(args: ListLogFilesArgs) {
+    const { pattern } = args;
+
+    const files = await this.moonraker.listLogFiles(pattern);
+
+    const fileList = files
+      .map((file) => {
+        const sizeKB = (file.size / 1024).toFixed(1);
+        const modDate = new Date(file.modified * 1000).toISOString();
+        return `${file.path} (${sizeKB}KB, modified: ${modDate})`;
+      })
+      .join('\n');
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `Log files${pattern ? ` matching "${pattern}"` : ''}:\n\nConnection: ${this.moonraker.getConnectionInfo()}\n\n${fileList || 'No files found'}`,
+        },
+      ],
+    };
+  }
+
+  private async handleGetDocFile(args: GetDocFileArgs) {
+    const { filename } = args;
+
+    if (!filename || filename.trim() === '') {
+      throw new McpError(ErrorCode.InvalidParams, 'Filename is required');
+    }
+
+    const content = await this.moonraker.getDocFile(filename);
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `Documentation file: ${filename}\n\nConnection: ${this.moonraker.getConnectionInfo()}\n\n${content}`,
+        },
+      ],
+    };
+  }
+
+  private async handleListDocFiles(args: ListDocFilesArgs) {
+    const { pattern } = args;
+
+    const files = await this.moonraker.listDocFiles(pattern);
+
+    const fileList = files
+      .map((file) => {
+        const sizeKB = (file.size / 1024).toFixed(1);
+        const modDate = new Date(file.modified * 1000).toISOString();
+        return `${file.path} (${sizeKB}KB, modified: ${modDate})`;
+      })
+      .join('\n');
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `Documentation files${pattern ? ` matching "${pattern}"` : ''}:\n\nConnection: ${this.moonraker.getConnectionInfo()}\n\n${fileList || 'No files found'}`,
+        },
+      ],
+    };
   }
 
   async run() {
